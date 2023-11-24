@@ -101,7 +101,8 @@ if __name__ == "__main__":
     # adding send button
     close_button = Button(frame_main_1, text="Close", command=close_app, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 
-    data = [{'title': 'car 1', 'price': '1', 'time_left': 'time 1', 'bids': "1", 'link': 'link test 1'}, {'title': 'car 2', 'price': '2', 'time_left': 'time 2', 'bids': "2", 'link': 'link test 2'}] 
+    # data = [{'title': 'car 1', 'price': '1', 'time_left': 'time 1', 'bids': "1", 'link': 'link test 1'}, {'title': 'car 2', 'price': '2', 'time_left': 'time 2', 'bids': "2", 'link': 'link test 2'}] 
+    data = []
     create_table(data)
 
 
