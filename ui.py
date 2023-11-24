@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import showinfo
+from operator import itemgetter
 from scraper import Scraper
 
 # constants
@@ -15,22 +16,21 @@ url2 = "&_sacat=0&rt=nc&LH_Auction=1"
 def close_app():
     exit()
 
-def search():
+def search(search_value, sort_value):
     # get inputs to scrape
     # check what value has been inputted into the entry box
     # use that input to create the url to be passed into the scraper
     # start scraper function
-    search_product1 = str(search_product_entry.get()) # perfume
-    # sort_value = str(sort_value.get()) # sort type doesn't work
-    print("search: " + search_product1)
-    print("Selected Option: {}".format(sort_value.get()))
-    scraper1 = Scraper(url1 + search_product1 + url2) # concatenate strings to include search value
+
+    print("search_value: " + search_value)
+    print("sort_value: " + sort_value)
+    scraper1 = Scraper(url1 + search_value + url2) # concatenate strings to include search value
     data_list = scraper1.return_data()
-    create_table(data_list)
+    create_table(data_list, sort_value)
 
 #data = [{'Geeks': 'dataframe', 'For': 'using', 'geeks': 'list', 'Portal': 10000}, {'Geeks':10, 'For': 20, 'geeks': 30}]
 
-def create_table(data_list):
+def create_table(data_list, sort_value):
     # define columns
     columns = ('title', 'price', 'time_left', 'bids', 'link')
 
@@ -50,14 +50,31 @@ def create_table(data_list):
     # generate sample data
     # soup[0] - DICT
     # soup - LIST
+    
+    # sort list
+    sort_code = ""
+    reverse_sort = False
+    if (sort_value == "Default"):
+        sort_code = "title"
+    elif (sort_value == "Price: Low to high"):
+        sort_code = "price"
+    elif (sort_value == "Price: High to low"):
+        sort_code = "price"
+        reverse_sort = True
+    elif (sort_value == "Time left"):
+        sort_code = "time_left"
+    else:
+        sort_code = "title"
+    
+    products = sorted(data_list, key=itemgetter(sort_code), reverse=reverse_sort)
 
-    products = []
+    sorted_products = []
     
     for i in range(len(data_list)):
-        products.append((data_list[i].get('title'), "£" + str(data_list[i].get('price')), data_list[i].get('time_left'), data_list[i].get('bids'), data_list[i].get('link')))
-    
+        sorted_products.append((products[i].get('title'), "£" + str(products[i].get('price')), products[i].get('time_left'), products[i].get('bids'), products[i].get('link')))
+
     # add data to the treeview
-    for product in products:
+    for product in sorted_products:
         tree.insert('', END, values=product)
 
     tree.grid(row=0, column=0, sticky='nsew') # adds table to the grid
@@ -99,25 +116,24 @@ if __name__ == "__main__":
 
     search_product = Label(frame_main_1, text="Search product: ")
     
-    # search button
-    search_product1 = StringVar()
-    search_product_entry = Entry(frame_main_1, textvariable = search_product1, width=40) # width=40 changes the width of the entry box
+    # search entry box
+    search_product_entry = Entry(frame_main_1, width=40) # width=40 changes the width of the entry box
 
     # sort by
     sort_by_list = ('Default', 'Price: Low to high', 'Price: High to low', 'Time left')
-    sort_value = StringVar(frame_main_1)
-    sort_value.set("Select an Option")
-    question_menu = OptionMenu(frame_main_1, sort_value, *sort_by_list)
+    sort_variable = StringVar(frame_main_1)
+    sort_variable.set("Select an Option")
+    question_menu = OptionMenu(frame_main_1, sort_variable, *sort_by_list)
 
-    # search button
-    search_button = Button(frame_main_1, text="Search", command=search, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
+    # search button with search value and sort by value inputted as arguments
+    search_button = Button(frame_main_1, text="Search", command=lambda: search(str(search_product_entry.get()), str(sort_variable.get())), bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 
-    # adding send button
+    # close button
     close_button = Button(frame_main_1, text="Close", command=close_app, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 
     # data = [{'title': 'car 1', 'price': '1', 'time_left': 'time 1', 'bids': "1", 'link': 'link test 1'}, {'title': 'car 2', 'price': '2', 'time_left': 'time 2', 'bids': "2", 'link': 'link test 2'}] 
     data = []
-    create_table(data)
+    create_table(data, "default")
 
 
     # adding widgets to the grid
