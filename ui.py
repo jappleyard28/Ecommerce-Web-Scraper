@@ -21,7 +21,9 @@ def search():
     # use that input to create the url to be passed into the scraper
     # start scraper function
     search_product1 = str(search_product_entry.get()) # perfume
+    # sort_value = str(sort_value.get()) # sort type doesn't work
     print("search: " + search_product1)
+    print("Selected Option: {}".format(sort_value.get()))
     scraper1 = Scraper(url1 + search_product1 + url2) # concatenate strings to include search value
     data_list = scraper1.return_data()
     create_table(data_list)
@@ -29,9 +31,6 @@ def search():
 #data = [{'Geeks': 'dataframe', 'For': 'using', 'geeks': 'list', 'Portal': 10000}, {'Geeks':10, 'For': 20, 'geeks': 30}]
 
 def create_table(data_list):
-    # adding a table
-    # ---------------------------------------------------------------------------------------------------- #
-
     # define columns
     columns = ('title', 'price', 'time_left', 'bids', 'link')
 
@@ -72,20 +71,28 @@ def create_table(data_list):
 
 if __name__ == "__main__":
     window = Tk()
-    # window.state("zoomed") # makes full screen with title bar and taskbar
+    window.state("zoomed") # makes full screen with title bar and taskbar
     window.title("Ecommerce-Web-Scraper")
+    window.grid_columnconfigure(0, weight=1)
+    # window.configure(background='purple')
 
     # creating grid for gui
-    frame_header = Frame(window, borderwidth=2, pady=2)
-    frame_centre = Frame(window, borderwidth=2, pady=5)
-    frame_bottom = Frame(window, borderwidth=2, pady=5)
+    frame_header = Frame(window, borderwidth=2, pady=100, highlightthickness=2)
+    frame_header.grid_columnconfigure(0, weight=1)
+    # frame_header.configure(background='purple')
+    
+    frame_centre = Frame(window, borderwidth=2, pady=20)
+    # frame_centre.configure(background='blue')
 
-    frame_header.grid(row=0, column=0)
-    frame_centre.grid(row=1, column=0)
-    frame_bottom.grid(row=2, column=0)
+    frame_bottom = Frame(window, borderwidth=2, pady=50)
+    # frame_bottom.configure(background='green')
 
-    header = Label(frame_header, text="Ecommerce Web Scraper", bg='grey', fg='black', height='3', width='50', font=("Helvetica 16 bold"))
-    header.grid(row=0, column=0)
+    frame_header.grid(row=0, column=0, sticky="nsew") # sticky="nsew" makes it fill frame horizontally
+    frame_centre.grid(row=1, column=0, sticky="nsew")
+    frame_bottom.grid(row=2, column=0, sticky="nsew")
+
+    header = Label(frame_header, text="Ecommerce Web Scraper", bg='grey', fg='black', font=("Helvetica 16 bold"))
+    header.grid(row=0, column=0, columnspan=10)
 
     frame_main_1 = Frame(frame_centre, borderwidth=2, relief='sunken')
     frame_main_2 = Frame(frame_centre, borderwidth=2, relief='raised')
@@ -95,8 +102,15 @@ if __name__ == "__main__":
     # search button
     search_product1 = StringVar()
     search_product_entry = Entry(frame_main_1, textvariable = search_product1, width=40) # width=40 changes the width of the entry box
-    search_button = Button(frame_main_1, text="Search", command=search, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 
+    # sort by
+    sort_by_list = ('Default', 'Price: Low to high', 'Price: High to low', 'Time left')
+    sort_value = StringVar(frame_main_1)
+    sort_value.set("Select an Option")
+    question_menu = OptionMenu(frame_main_1, sort_value, *sort_by_list)
+
+    # search button
+    search_button = Button(frame_main_1, text="Search", command=search, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 
     # adding send button
     close_button = Button(frame_main_1, text="Close", command=close_app, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
@@ -111,10 +125,8 @@ if __name__ == "__main__":
     frame_main_2.pack(fill='x', pady=2)
     search_product.pack(side='left')
     search_product_entry.pack(side='left', padx=1)
+    question_menu.pack(side='left', padx=1)
     search_button.pack(side='left', padx=1)
     close_button.pack(side='left', padx=1)
-
-
-    window.configure(width=500, height=750, bg=BG_COLOR) # window.geometry("500x750")
 
     window.mainloop()
