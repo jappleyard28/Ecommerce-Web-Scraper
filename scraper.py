@@ -28,13 +28,18 @@ class Scraper:
                 products_list.append(product)
         return products_list
 
-    def run(self):
+    def return_data(self):
         soup = Scraper.get_data(self.url)
+        print(type(Scraper.parse(soup))) # dictionary inside list
+        print("\n\n")
         print(Scraper.parse(soup)[0].get('title'))
         print(Scraper.parse(soup)[0].get('soldprice'))
         print(Scraper.parse(soup)[0].get('timeleft'))
         print(Scraper.parse(soup)[0].get('bids'))
         print(Scraper.parse(soup)[0].get('link'))
+
+        return type(Scraper.parse(soup)[0])
+        # return Scraper.parse(soup)[0].get('title')
 
 ''' test_scraper = Scraper("https://www.ebay.co.uk/sch/i.html?_from=R40&_nkw=perfume&_sacat=0&rt=nc&LH_Auction=1")
 test_scraper.run() '''

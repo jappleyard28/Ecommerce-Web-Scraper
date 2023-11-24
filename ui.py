@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import ttk
+from tkinter.messagebox import showinfo
 from scraper import Scraper
 
 # constants
@@ -21,11 +23,13 @@ def search():
     search_product1 = str(search_product_entry.get()) # perfume
     print("search: " + search_product1)
     scraper1 = Scraper(url1 + search_product1 + url2) # concatenate strings to include search value
-    scraper1.run()
+    data_list = scraper1.return_data()
+    print("test here")
+    print(data_list)
 
 
 window = Tk()
-window.state("zoomed") # makes full screen with title bar and taskbar
+# window.state("zoomed") # makes full screen with title bar and taskbar
 window.title("Ecommerce-Web-Scraper")
 
 # creating grid for gui
@@ -53,6 +57,45 @@ search_button = Button(frame_main_1, text="Search", command=search, bg='dark gre
 #adding send button
 close_button = Button(frame_bottom, text="Close", command=close_app, bg='dark green', fg='white', relief='raised', width=10, font=('Helvetica 9 bold')) # command=search_products - search_products is function
 close_button.grid(column=0, row=0, sticky='w', padx=100, pady=2)
+
+# adding a table
+# ---------------------------------------------------------------------------------------------------- #
+
+# define columns
+columns = ('title', 'price', 'time_left', 'bids', 'link')
+
+tree = ttk.Treeview(frame_bottom, columns=columns, show='headings')
+
+# define headings
+tree.heading('title', text='Product Title')
+tree.heading('price', text='Price')
+tree.heading('time_left', text='Time Left')
+tree.heading('bids', text='Bids')
+tree.heading('link', text='Link')
+
+# generate sample data
+# soup - LIST
+
+# ('title 91', 'price 91', 'time_left 91', 'bids 91', 'link 91') = TUPLE
+# ('title 91', 'price 91', 'time_left 91', 'bids 91', 'link 91'), ('title 91', 'price 91', 'time_left 91', 'bids 91', 'link 91') = LIST
+contacts = []
+for n in range(1, 100):
+    contacts.append((f'title {n}', f'price {n}', f'time_left {n}', f'bids {n}', f'link {n}'))
+
+# add data to the treeview
+for contact in contacts:
+    tree.insert('', END, values=contact)
+
+tree.grid(row=0, column=0, sticky='nsew') # adds table to the grid
+
+# add a scrollbar
+scrollbar = ttk.Scrollbar(frame_bottom, orient=VERTICAL, command=tree.yview)
+tree.configure(yscroll=scrollbar.set)
+scrollbar.grid(row=0, column=1, sticky='ns')
+
+# ---------------------------------------------------------------------------------------------------- #
+
+
 # adding widgets to the grid
 frame_main_1.pack(fill='x', pady=2)
 frame_main_2.pack(fill='x', pady=2)
