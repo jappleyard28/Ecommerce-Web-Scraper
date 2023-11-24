@@ -51,16 +51,12 @@ def create_table(data_list):
     # generate sample data
     # soup[0] - DICT
     # soup - LIST
-    # data = [{'Geeks': 'dataframe', 'For': 'using', 'geeks': 'list', 'Portal': 10000}, {'Geeks':10, 'For': 20, 'geeks': 30}] 
 
-    # ('title 91', 'price 91', 'time_left 91', 'bids 91', 'link 91') = TUPLE
-    # ('title 91', 'price 91', 'time_left 91', 'bids 91', 'link 91'), ('title 92', 'price 92', 'time_left 92', 'bids 92', 'link 92') = LIST
     products = []
     
     for i in range(len(data_list)):
-        products.append((data_list[i].get('title'), data_list[i].get('price'), data_list[i].get('time_left'), data_list[i].get('bids'), data_list[i].get('link')))
+        products.append((data_list[i].get('title'), "£" + str(data_list[i].get('price')), data_list[i].get('time_left'), data_list[i].get('bids'), data_list[i].get('link')))
     
-
     # add data to the treeview
     for product in products:
         tree.insert('', END, values=product)
