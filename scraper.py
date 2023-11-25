@@ -19,22 +19,20 @@ class Scraper:
         for item in results:
             if (item.find('a', {'class': 's-item__link'})['href'] != "https://ebay.com/itm/123456?hash=item28caef0a3a:g:E3kAAOSwlGJiMikD&amdata=enc%3AAQAHAAAAsJoWXGf0hxNZspTmhb8%2FTJCCurAWCHuXJ2Xi3S9cwXL6BX04zSEiVaDMCvsUbApftgXEAHGJU1ZGugZO%2FnW1U7Gb6vgoL%2BmXlqCbLkwoZfF3AUAK8YvJ5B4%2BnhFA7ID4dxpYs4jjExEnN5SR2g1mQe7QtLkmGt%2FZ%2FbH2W62cXPuKbf550ExbnBPO2QJyZTXYCuw5KVkMdFMDuoB4p3FwJKcSPzez5kyQyVjyiIq6PB2q%7Ctkp%3ABlBMULq7kqyXYA"):
                 # strip bids to make it an integer
-                bid_int_before = item.find('span', {'class': 's-item__bids'}).text
+                raw_bid = item.find('span', {'class': 's-item__bids'}).text
                 bid_int = ""
-                for i in range(len(bid_int_before)):
-                    if (bid_int_before[i].isdigit()):
-                        bid_int += bid_int_before[i]
+                for i in range(len(raw_bid)):
+                    if (raw_bid[i].isdigit()):
+                        bid_int += raw_bid[i]
                 
                 product = {
-                    'title': item.find('div', {'class': 's-item__title'}).text,
+                    'title': item.find('div', {'class': 's-item__title'}).text.replace('New listing', ''),
                     'price': float(item.find('span', {'class': 's-item__price'}).text.replace('£', '').replace(',', '').strip()),
                     'time_left': item.find('span', {'class': 's-item__time-left'}).text,
                     'bids': int(bid_int),
                     'link': item.find('a', {'class': 's-item__link'})['href']
                 }
                 products_list.append(product)
-                print(bid_int)
-                print("--------------------------------------------------")
         return products_list
 
     def return_data(self):
@@ -49,6 +47,3 @@ class Scraper:
 
         return Scraper.parse(soup)
         # return Scraper.parse(soup)[0].get('title')
-
-''' test_scraper = Scraper("https://www.ebay.co.uk/sch/i.html?_from=R40&_nkw=perfume&_sacat=0&rt=nc&LH_Auction=1")
-test_scraper.run() '''
