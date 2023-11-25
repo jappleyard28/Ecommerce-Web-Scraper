@@ -28,7 +28,8 @@ def search(search_value, sort_value):
     data_list = scraper1.return_data()
     create_table(data_list, sort_value)
 
-#data = [{'Geeks': 'dataframe', 'For': 'using', 'geeks': 'list', 'Portal': 10000}, {'Geeks':10, 'For': 20, 'geeks': 30}]
+    print("bids: " + str(data_list[0].get('bids')))
+    print("bids: " + str(type(data_list[0].get('bids'))))
 
 def create_table(data_list, sort_value):
     # define columns
@@ -54,22 +55,24 @@ def create_table(data_list, sort_value):
     # sort list
     sort_code = ""
     reverse_sort = False
-    if (sort_value == "Default"):
+    if (sort_value.lower() == "default"):
         sort_code = "title"
-    elif (sort_value == "Price: Low to high"):
+    elif (sort_value.lower() == "price: low to high"):
         sort_code = "price"
-    elif (sort_value == "Price: High to low"):
+    elif (sort_value.lower() == "price: high to low"):
         sort_code = "price"
         reverse_sort = True
-    elif (sort_value == "Time left"):
-        sort_code = "time_left"
+    elif (sort_value.lower() == "bids: low to high"):
+        sort_code = "bids"
+    elif (sort_value.lower() == "bids: high to low"):
+        sort_code = "bids"
+        reverse_sort = True
     else:
         sort_code = "title"
     
     products = sorted(data_list, key=itemgetter(sort_code), reverse=reverse_sort)
 
     sorted_products = []
-    
     for i in range(len(data_list)):
         sorted_products.append((products[i].get('title'), "£" + str(products[i].get('price')), products[i].get('time_left'), products[i].get('bids'), products[i].get('link')))
 
@@ -78,6 +81,9 @@ def create_table(data_list, sort_value):
         tree.insert('', END, values=product)
 
     tree.grid(row=0, column=0, sticky='nsew') # adds table to the grid
+
+    if (len(products) > 0):
+        print("HERE: " + str(type(products[0].get('time_left'))))
 
     # add a scrollbar
     scrollbar = ttk.Scrollbar(frame_bottom, orient=VERTICAL, command=tree.yview)
@@ -120,7 +126,7 @@ if __name__ == "__main__":
     search_product_entry = Entry(frame_main_1, width=40) # width=40 changes the width of the entry box
 
     # sort by
-    sort_by_list = ('Default', 'Price: Low to high', 'Price: High to low', 'Time left')
+    sort_by_list = ('Default', 'Price: Low to high', 'Price: High to low', 'Bids: Low to high', 'Bids: High to low')
     sort_variable = StringVar(frame_main_1)
     sort_variable.set("Select an Option")
     question_menu = OptionMenu(frame_main_1, sort_variable, *sort_by_list)
